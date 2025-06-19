@@ -1,0 +1,18 @@
+name: Prevent merges from development
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  check-source-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail if source branch is development
+        run: |
+          echo "Source: ${{ github.head_ref }}"
+          echo "Target: ${{ github.base_ref }}"
+          if [ "${{ github.head_ref }}" = "development" ]; then
+            echo "❌ Merging from 'development' is not allowed."
+            exit 1
+          fi
